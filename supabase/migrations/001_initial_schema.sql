@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS public.waitlist_applications (
     -- Security & fraud prevention
     ip_address INET,
     user_agent TEXT,
-    hcaptcha_score NUMERIC(3,2),
+    recaptcha_verified BOOLEAN DEFAULT FALSE,
     fraud_score NUMERIC(3,2),
     
     -- Constraints

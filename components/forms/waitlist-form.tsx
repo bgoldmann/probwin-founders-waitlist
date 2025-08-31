@@ -9,7 +9,7 @@ import { Textarea } from '../ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group'
 import { Checkbox } from '../ui/checkbox'
-import { HCaptcha, type HCaptchaRef } from '../ui/hcaptcha'
+import { Recaptcha, type RecaptchaRef } from '../ui/recaptcha'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
   ArrowRight, 
@@ -105,7 +105,7 @@ export function WaitlistForm({ selectedTier, onSubmit, onBack, className = '' }:
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [captchaToken, setCaptchaToken] = useState<string | null>(null)
   
-  const hcaptchaRef = useRef<HCaptchaRef>(null)
+  const recaptchaRef = useRef<RecaptchaRef>(null)
 
   const steps: { key: FormStep; title: string; icon: React.ReactNode }[] = [
     { key: 'personal', title: 'Personal Info', icon: <User className="w-4 h-4" /> },
@@ -541,11 +541,10 @@ export function WaitlistForm({ selectedTier, onSubmit, onBack, className = '' }:
                   </p>
                   
                   <div className="flex justify-center">
-                    <HCaptcha
-                      ref={hcaptchaRef}
+                    <Recaptcha
+                      ref={recaptchaRef}
                       onVerify={handleCaptchaVerify}
                       onError={() => setErrors(prev => ({ ...prev, captcha: 'Security verification failed' }))}
-                      className="mx-auto"
                     />
                   </div>
 

@@ -33,7 +33,7 @@ export interface WaitlistApplication {
   deferred_until?: string;
   ip_address?: string;
   user_agent?: string;
-  hcaptcha_score?: number;
+  recaptcha_verified?: boolean;
   fraud_score?: number;
 }
 
@@ -69,7 +69,7 @@ export interface ApplicationFormData {
   risk_profile: string;
   notes?: string;
   eligibility_agreed: boolean;
-  hcaptcha_token: string;
+  recaptcha_token: string;
 }
 
 export interface ApiResponse<T = any> {

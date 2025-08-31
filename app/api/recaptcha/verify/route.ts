@@ -1,16 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { HCaptchaVerifier } from '../../../../lib/hcaptcha'
+import { RecaptchaVerifier } from '../../../../lib/recaptcha'
 import { DatabaseOperations } from '../../../../lib/database'
 
-// Validation schema for hCaptcha verification
+// Validation schema for reCAPTCHA verification
 const verifySchema = z.object({
-  token: z.string().min(100, 'Invalid captcha token'),
+  token: z.string().min(20, 'Invalid captcha token'),
 })
 
 /**
- * Verify hCaptcha token
- * POST /api/hcaptcha/verify
+ * Verify reCAPTCHA token
+ * POST /api/recaptcha/verify
  */
 export async function POST(req: NextRequest) {
   try {
@@ -21,12 +21,12 @@ export async function POST(req: NextRequest) {
     const clientIP = req.ip || req.headers.get('x-forwarded-for') || 'unknown'
     const userAgent = req.headers.get('user-agent')
     
-    // Verify the hCaptcha token
-    const result = await HCaptchaVerifier.verify(token, clientIP)
+    // Verify the reCAPTCHA token
+    const result = await RecaptchaVerifier.verify(token, clientIP)
     
     // Log verification result
     await DatabaseOperations.logSecurityEvent(
-      'hcaptcha_verification_api',
+      'recaptcha_verification_api',
       result.success ? 'low' : 'medium',
       {
         ip_address: clientIP,
@@ -34,8 +34,8 @@ export async function POST(req: NextRequest) {
         event_data: {
           success: result.success,
           error_codes: result.errorCodes,
-          score: result.score,
-          risk_reason: result.riskReason,
+          hostname: result.hostname,
+          error_message: result.errorMessage,
         }
       }
     )
@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
         {
           success: false,
           error: 'Captcha verification failed',
-          details: result.riskReason || 'Invalid captcha response',
+          details: result.errorMessage || 'Invalid captcha response',
         },
         { status: 400 }
       )
@@ -53,15 +53,15 @@ export async function POST(req: NextRequest) {
     
     return NextResponse.json({
       success: true,
-      score: result.score,
+      hostname: result.hostname,
     })
     
   } catch (error) {
-    console.error('hCaptcha verification API error:', error)
+    console.error('reCAPTCHA verification API error:', error)
     
     // Log API error
     await DatabaseOperations.logSecurityEvent(
-      'hcaptcha_verification_api_error',
+      'recaptcha_verification_api_error',
       'high',
       {
         ip_address: req.ip,
@@ -94,8 +94,8 @@ export async function POST(req: NextRequest) {
 }
 
 /**
- * Get hCaptcha configuration status (development only)
- * GET /api/hcaptcha/verify
+ * Get reCAPTCHA configuration status (development only)
+ * GET /api/recaptcha/verify
  */
 export async function GET(req: NextRequest) {
   // Only allow in development
@@ -107,8 +107,8 @@ export async function GET(req: NextRequest) {
   }
   
   try {
-    const configStatus = HCaptchaVerifier.validateConfiguration()
-    const testResult = await HCaptchaVerifier.testConfiguration()
+    const configStatus = RecaptchaVerifier.validateConfiguration()
+    const testResult = await RecaptchaVerifier.testConfiguration()
     
     return NextResponse.json({
       configuration: configStatus,

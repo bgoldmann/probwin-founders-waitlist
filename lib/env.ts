@@ -21,8 +21,8 @@ const envSchema = z.object({
   RESEND_API_KEY: z.string().min(1),
   
   // Security
-  HCAPTCHA_SECRET_KEY: z.string().min(1),
-  NEXT_PUBLIC_HCAPTCHA_SITE_KEY: z.string().min(1),
+  RECAPTCHA_SECRET_KEY: z.string().min(1),
+  NEXT_PUBLIC_RECAPTCHA_SITE_KEY: z.string().min(1),
   JWT_SECRET: z.string().min(32),
   ADMIN_EMAIL: z.string().email(),
   SECURITY_SALT: z.string().min(16),
@@ -49,7 +49,7 @@ export const env = {
         NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL!,
         NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
         NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
-        NEXT_PUBLIC_HCAPTCHA_SITE_KEY: process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY!,
+        NEXT_PUBLIC_RECAPTCHA_SITE_KEY: process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!,
       };
     } else {
       // Server-side environment variables

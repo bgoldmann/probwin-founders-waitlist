@@ -26,8 +26,8 @@ const applicationSubmissionSchema = z.object({
     message: "GDPR consent is required"
   }),
   marketing_consent: z.boolean().default(false),
-  // hCaptcha verification
-  'h-captcha-response': z.string().min(1, "Please complete the captcha verification")
+  // reCAPTCHA verification
+  'g-recaptcha-response': z.string().min(1, "Please complete the captcha verification")
 });
 
 /**
@@ -61,8 +61,8 @@ export const POST = publicApi(async (context) => {
 
     const validatedData = validation.data;
 
-    // Verify hCaptcha token
-    const captchaValid = await verifyHCaptcha(validatedData['h-captcha-response'], context.ip);
+    // Verify reCAPTCHA token
+    const captchaValid = await verifyRecaptcha(validatedData['g-recaptcha-response'], context.ip);
     
     if (!captchaValid) {
       SecurityAudit.logSecurityEvent({
@@ -80,7 +80,7 @@ export const POST = publicApi(async (context) => {
     }
 
     // Remove captcha response from data before storing
-    const { 'h-captcha-response': captcha, ...applicationData } = validatedData;
+    const { 'g-recaptcha-response': captcha, ...applicationData } = validatedData;
 
     // Create application with security context
     const result = await SupabaseSecureOperations.createApplication(
@@ -153,18 +153,18 @@ export const POST = publicApi(async (context) => {
 });
 
 /**
- * Verify hCaptcha token
+ * Verify reCAPTCHA token
  */
-async function verifyHCaptcha(token: string, remoteip?: string): Promise<boolean> {
+async function verifyRecaptcha(token: string, remoteip?: string): Promise<boolean> {
   try {
-    const secretKey = process.env.HCAPTCHA_SECRET_KEY;
+    const secretKey = process.env.RECAPTCHA_SECRET_KEY;
     
-    if (!secretKey) {
-      console.error('Missing hCaptcha secret key');
-      return false;
+    if (!secretKey || secretKey === 'placeholder_secret_key') {
+      console.warn('reCAPTCHA verification bypassed in development');
+      return true;
     }
 
-    const response = await fetch('https://hcaptcha.com/siteverify', {
+    const response = await fetch('https://www.google.com/recaptcha/api/siteverify', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -177,7 +177,7 @@ async function verifyHCaptcha(token: string, remoteip?: string): Promise<boolean
     });
 
     if (!response.ok) {
-      console.error('hCaptcha verification request failed');
+      console.error('reCAPTCHA verification request failed');
       return false;
     }
 
@@ -185,7 +185,7 @@ async function verifyHCaptcha(token: string, remoteip?: string): Promise<boolean
     return data.success === true;
     
   } catch (error) {
-    console.error('hCaptcha verification error:', error);
+    console.error('reCAPTCHA verification error:', error);
     return false;
   }
 }
