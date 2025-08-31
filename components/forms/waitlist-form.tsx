@@ -159,6 +159,28 @@ export function WaitlistForm({ selectedTier, onSubmit, onBack, className = '' }:
             newErrors.captcha = 'Please complete the security verification'
           }
           break
+        case 'review':
+          // Validate all required fields and captcha for final submission
+          if (!captchaToken) {
+            newErrors.captcha = 'Please complete the security verification'
+          }
+          // Re-validate all form data
+          personalInfoSchema.parse({
+            fullName: formData.fullName,
+            email: formData.email,
+            phone: formData.phone,
+          })
+          bettingInfoSchema.parse({
+            timeCommitment: formData.timeCommitment,
+            bankroll: formData.bankroll,
+            riskProfile: formData.riskProfile,
+          })
+          additionalInfoSchema.parse({
+            notes: formData.notes,
+            agreeToTerms: formData.agreeToTerms,
+            agreeToPrivacy: formData.agreeToPrivacy,
+          })
+          break
       }
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -206,7 +228,12 @@ export function WaitlistForm({ selectedTier, onSubmit, onBack, className = '' }:
     
     setIsSubmitting(true)
     try {
-      await onSubmit(formData)
+      // Include reCAPTCHA token in submission data
+      const submissionData = {
+        ...formData,
+        'g-recaptcha-response': captchaToken
+      }
+      await onSubmit(submissionData)
     } catch (error) {
       console.error('Form submission error:', error)
     } finally {
