@@ -44,7 +44,7 @@ export class DatabaseOperations {
     metadata: {
       ip_address?: string
       user_agent?: string
-      hcaptcha_score?: number
+      recaptcha_verified?: boolean
     }
   ): Promise<WaitlistApplication> {
     const supabase = createServiceClient()
@@ -71,7 +71,7 @@ export class DatabaseOperations {
           credit_amount_cents: creditAmount,
           ip_address: metadata.ip_address,
           user_agent: metadata.user_agent,
-          hcaptcha_score: metadata.hcaptcha_score,
+          recaptcha_verified: metadata.recaptcha_verified,
         }])
         .select()
         .single()

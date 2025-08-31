@@ -59,7 +59,7 @@ export interface Database {
           deferred_until: string | null
           ip_address: string | null
           user_agent: string | null
-          hcaptcha_score: number | null
+          recaptcha_verified: boolean | null
           fraud_score: number | null
         }
         Insert: {
@@ -91,7 +91,7 @@ export interface Database {
           deferred_until?: string | null
           ip_address?: string | null
           user_agent?: string | null
-          hcaptcha_score?: number | null
+          recaptcha_verified?: boolean | null
           fraud_score?: number | null
         }
         Update: {
@@ -123,7 +123,7 @@ export interface Database {
           deferred_until?: string | null
           ip_address?: string | null
           user_agent?: string | null
-          hcaptcha_score?: number | null
+          recaptcha_verified?: boolean | null
           fraud_score?: number | null
         }
       }

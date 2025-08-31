@@ -130,9 +130,9 @@ export const WaitlistApplicationSchema = z.object({
     .boolean()
     .refine(val => val === true, 'You must agree to the eligibility requirements'),
     
-  hcaptcha_token: z
+  recaptcha_token: z
     .string()
-    .min(100, 'Invalid captcha token')
+    .min(20, 'Invalid captcha token')
     .transform(sanitizeString),
 })
 

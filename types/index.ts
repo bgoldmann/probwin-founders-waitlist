@@ -123,8 +123,8 @@ export interface ProcessEnv {
   STRIPE_PRICE_ID_199: string;
   STRIPE_WEBHOOK_SECRET: string;
   RESEND_API_KEY: string;
-  HCAPTCHA_SECRET_KEY: string;
-  NEXT_PUBLIC_HCAPTCHA_SITE_KEY: string;
+  RECAPTCHA_SECRET_KEY: string;
+  NEXT_PUBLIC_RECAPTCHA_SITE_KEY: string;
   JWT_SECRET: string;
   ADMIN_EMAIL: string;
   SECURITY_SALT: string;
