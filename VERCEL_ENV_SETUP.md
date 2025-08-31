@@ -1,5 +1,7 @@
 # 🚀 Vercel Environment Variables Setup
 
+**IMPORTANT:** Clear Vercel build cache if deployment fails!
+
 ## Import these variables into your Vercel Dashboard:
 
 Go to: [Vercel Environment Variables](https://vercel.com/berniegoldmannone-gmailcoms-projects/probwin-waitlist/settings/environment-variables)
